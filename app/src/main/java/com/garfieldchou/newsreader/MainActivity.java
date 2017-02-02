@@ -128,11 +128,31 @@ public class MainActivity extends AppCompatActivity {
 
                         String articleURL = jsonObject.getString("url");
 
-                        Log.i("info", articleTitle + articleURL);
+                        url = new URL(articleURL);
+
+                        urlConnection = (HttpURLConnection) url.openConnection();
+
+                        in = urlConnection.getInputStream();
+
+                        reader = new InputStreamReader(in);
+
+                        data = reader.read();
+
+                        String articleContent = "";
+
+                        while (data != -1) {
+
+                            char current = (char) data;
+
+                            articleContent += current;
+
+                            data = reader.read();
+
+                        }
+
+                        Log.i("articleContent", articleContent);
 
                     }
-
-
 
                 }
 
