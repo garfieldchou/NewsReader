@@ -1,5 +1,6 @@
 package com.garfieldchou.newsreader;
 
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.os.AsyncTask;
@@ -26,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
     ArrayList<String> titles = new ArrayList<>();
 
+    ArrayList<String> content = new ArrayList<>();
+
     ArrayAdapter arrayAdapter;
 
     SQLiteDatabase articlesDB;
@@ -45,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
 
         articlesDB.execSQL("CREATE TABLE IF NOT EXISTS articles (id INTEGER PRIMARY KEY, articleId INTEGER, title VARCHAR, content VARCHAR)");
 
+        updateListView();
+
         DownloadTask task = new DownloadTask();
 
         try {
@@ -56,6 +61,32 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
 
         }
+
+    }
+
+    public void updateListView() {
+
+        Cursor c = articlesDB.rawQuery("SELECT * FROM articles", null);
+
+        int contentIndex = c.getColumnIndex("content");
+        int titleIndex = c.getColumnIndex("title");
+
+        if (c.moveToFirst()) {
+
+            titles.clear();
+            content.clear();
+
+            do {
+
+                titles.add(c.getString(titleIndex));
+                content.add(c.getString(contentIndex));
+
+            } while (c.moveToNext());
+
+            arrayAdapter.notifyDataSetChanged();
+
+        }
+
 
     }
 
@@ -185,6 +216,14 @@ public class MainActivity extends AppCompatActivity {
             }
 
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            updateListView();
+            
         }
     }
 }
