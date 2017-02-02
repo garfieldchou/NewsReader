@@ -122,10 +122,17 @@ public class MainActivity extends AppCompatActivity {
 
                     JSONObject jsonObject = new JSONObject(articleInfo);
 
-                    String articleTitle = jsonObject.getString("title");
-                    String articleURL = jsonObject.getString("url");
+                    if (!jsonObject.isNull("title") && !jsonObject.isNull("url")) {
 
-                    Log.i("info", articleTitle + articleURL);
+                        String articleTitle = jsonObject.getString("title");
+
+                        String articleURL = jsonObject.getString("url");
+
+                        Log.i("info", articleTitle + articleURL);
+
+                    }
+
+
 
                 }
 
